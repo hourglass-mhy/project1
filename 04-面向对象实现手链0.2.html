@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas" width="800" height="600"></canvas>
+</body>
+</html>
+<script>
+    //对象:整个手环
+    //属性
+    //方法: 绘制图形(绘制大圆,绘制小圆)
+
+    //优化:传递对象数据
+
+    /**
+     * @param opts {bigX: 200,
+                    bigY: 200,
+                    bigRadius: 100,
+                    smallRadius: 5,
+                    startRadian: Math.PI/3,
+                    num:3}
+     * @constructor
+     */
+    function DrawChain(opts) {
+        //将opts中的属性快读拷贝给实例  混入继承
+        for (var key in opts) {
+            this[key] = opts[key];
+        }
+        this.init();
+    }
+    DrawChain.prototype = {
+        construstor: DrawChain,
+
+        //绘制图形
+        init: function () {
+            this.drawBigCircle();
+            this.drawSmallCircles();
+        },
+        //绘制大圆
+        drawBigCircle: function () {//this:构造函数的实例
+            var ctx = this.ctx;
+            ctx.beginPath();
+            ctx.arc(this.bigX, this.bigY, this.bigRadius, 0, 2 * Math.PI);
+            ctx.stroke();
+        },
+        //绘制单个小圆
+        drawSmallCircle: function (startRadian) {
+            var ctx = this.ctx;
+
+            //计算小圆在大圆上的位置
+            var b = this.bigRadius * Math.cos(startRadian);
+            var h = this.bigRadius * Math.sin(startRadian);
+
+            ctx.beginPath();
+            ctx.arc(this.bigX + b, this.bigY + h, this.smallRadius, 0, 2 * Math.PI)
+            ctx.fill();
+        },
+        //绘制多个小圆
+        drawSmallCircles: function () { //this:实例
+            //计算每个小圆的弧度
+            var singleRadian = 2 * Math.PI / this.num;
+
+            for (var i = 0; i < this.num; i++) {
+                this.drawSmallCircle(this.startRadian + i * singleRadian);
+            }
+        }
+    }
+
+
+    var canvas = document.getElementById("myCanvas");//获取canvas对象
+    var ctx = canvas.getContext("2d");//创建context对象
+
+    //设置绘制参数
+    var opts = {
+        ctx: ctx,
+        bigX: 200,
+        bigY: 200,
+        bigRadius: 100,
+        smallRadius: 5,
+        startRadian: Math.PI / 3,
+        num: 3
+    };
+    //创建对象
+    var myChain = new DrawChain(opts);
+</script>

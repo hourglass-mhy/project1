@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas" width="800" height="600"></canvas>
+</body>
+</html>
+<script>
+    var canvas = document.getElementById("myCanvas");//获取canvas对象
+    var ctx = canvas.getContext("2d");//创建context对象
+
+
+    var bigX=100;
+    var bigY=100;
+    var bigRadius=50;
+    var smallRadius=5;
+    var startRadian=Math.PI/3;
+    var num=10;
+
+    drawChain(bigX,bigY,bigRadius,smallRadius,startRadian,num);
+
+    //入口函数
+    function drawChain(bigX,bigY,bigRadius,smallRadius,startRadian,num) {
+
+        draBigCircle(bigX,bigY,bigRadius);
+        drawSmallCircles(bigX,bigY,bigRadius,smallRadius,startRadian,num);
+    }
+
+    //绘制绘制大圆
+    function draBigCircle(bigX,bigY,bigRadius) {
+        ctx.beginPath();
+        ctx.arc(bigX,bigY,bigRadius,0,2*Math.PI);
+        ctx.stroke();
+    }
+    //绘制单个小圆
+    function drawSmallCircle(bigX,bigY,bigRadius,smallRadius,startRadian) {
+        ctx.beginPath();
+        //计算小圆的坐标
+        var b=bigRadius*Math.cos(startRadian);
+        var h=bigRadius*Math.sin(startRadian);
+        ctx.arc(bigX+b,bigY+h,smallRadius,0,2*Math.PI);
+        ctx.fill();
+    }
+
+    //绘制多个小圆
+    //startRadian:第一个小圆的起始弧度
+    function drawSmallCircles(bigX,bigY,bigRadius,smallRadius,startRadian,num) {
+        //每个小圆的弧度
+        var singleRadian=2*Math.PI/num;
+        for(var i=0;i<num;i++){
+            drawSmallCircle(bigX,bigY,bigRadius,smallRadius,startRadian+i*singleRadian);
+        }
+    }
+
+    //使用函数实现模块化: 出现很多全局函数,造成全局变量的污染  ===>将方法设置为对象的方法:实现数据的私有化
+
+    //传递的参数是一个痛苦的过程
+
+
+</script>

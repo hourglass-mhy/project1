@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600" style="border:1px solid red"></canvas>
+</body>
+<script>
+    //优化：使用函数封装代码，让代码结构看起来更加清晰，同时也更加便于维护
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+
+    //极客：Geekor
+
+
+    function Chain(opt) {
+        if(!opt){
+            throw new Error("参数为空");
+        }
+        if(!opt.bigX || !opt.bigY) throw new Error("请传递大圆的圆心坐标");
+
+        //存储了相关参数的默认值
+        var _defaultOpt={
+            bigRadius:50,
+            smallRadius:5,
+            beginRadian:0
+        };
+        //将用户传递的参数opt将它里面的数据复制到_defaultOpt中
+        for (var key in opt) {
+            _defaultOpt[key]=opt[key];
+        }
+
+        for (var key in _defaultOpt) {
+            this[key]=_defaultOpt[key];
+        }
+
+
+        for (var key in opt) {
+            this[key]=opt[key];
+        }
+
+        //入口方法
+        this.drawChain();
+    }
+
+    Chain.prototype = {
+        constructor: Chain,
+        /**
+         * 绘制链子的入口函数
+         */
+        drawChain: function () {
+            //绘制大圆
+            this.drawBigCircle();
+            //绘制若干个小圆
+            this.drawSmallCircles();
+        },
+        //1、绘制大圆
+        drawBigCircle: function () {
+            //绘制大圆
+            var ctx=this.ctx;
+            ctx.beginPath();
+            ctx.arc(this.bigX, this.bigY, this.bigRadius, 0, 2 * Math.PI);
+            ctx.stroke();
+        },
+        //2、绘制单个小圆
+        drawSmallCircle: function (radian) {
+            var ctx=this.ctx;
+
+            var h = this.bigRadius * Math.sin(radian);
+            var b = this.bigRadius * Math.cos(radian);
+
+            //小圆的圆心坐标
+            var smallX = this.bigX + b, smallY = this.bigY + h;
+
+            ctx.beginPath();
+            ctx.arc(smallX, smallY, this.smallRadius, 0, 2 * Math.PI);
+            ctx.fill();
+        },
+        /**
+         * 3、绘制若干个小圆
+         * @param bigX 大圆的圆心x
+         * @param bigY 大圆的圆心y
+         * @param bigRadius 大圆的半径
+         * @param smallRadius 小圆的半径
+         * @param num 小圆的个数——————>计算出相邻小圆之间的弧度差
+         * @param beginRadian 第一个小圆位于大圆的弧度
+         */
+        drawSmallCircles: function () {
+            //设置小圆的参数
+
+            var singleRadian = 2 * Math.PI / this.num;//相邻小圆之间的弧度差
+
+            for (var i = 0; i < this.num; i++) {
+                this.drawSmallCircle(this.beginRadian + i * singleRadian);
+            }
+        }
+    };
+
+
+    //设置大圆的参数
+    var bigX = 100, bigY = 100, bigRadius = 50;
+
+    var smallRadius = 5;
+    var num = 10;
+    var beginRadian = Math.PI / 3;//第一个小圆位于大圆的弧度
+
+    //优化：参数以对象的方式进行传递，解决了用户因为参数太多而导致传参错误的问题
+    var chain=new Chain({
+        ctx:ctx,
+        bigX:bigX,
+        bigY:bigY,
+        bigRadius:bigRadius,
+        //smallRadius:smallRadius,
+        num:num,
+        //beginRadian:beginRadian//第一个圆心位于大圆的弧度
+    });
+
+    //缺省：默认
+
+
+
+
+
+
+</script>
+</html>

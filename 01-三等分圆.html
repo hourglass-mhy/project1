@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas" width="800" height="600"></canvas>
+</body>
+</html>
+<script>
+    var canvas = document.getElementById("myCanvas");//获取canvas对象
+    var ctx = canvas.getContext("2d");//创建context对象
+
+
+    //绘制大圆
+    var bigCircleX=200;
+    var bigCircleY=200;
+    var bigRadius=100;
+
+    ctx.arc(bigCircleX,bigCircleY,bigRadius,0,2*Math.PI);
+    ctx.stroke();
+
+    //绘制小圆
+    var smallRadius=5;
+    var num=3;
+
+    //均分整个圆
+    var singleRadian=2*Math.PI/num;
+    //指定第一个小圆的起始位置
+    var startRadian=3*Math.PI;
+
+    for(var i=0;i<num;i++){
+        ctx.beginPath();
+       //计算小圆在大圆上的坐标
+
+        var b=bigRadius*Math.cos(startRadian+singleRadian*i);
+        var h=bigRadius*Math.sin(startRadian+singleRadian*i);
+
+        ctx.arc(bigCircleX+b,bigCircleY+h,smallRadius,0,2*Math.PI);
+        ctx.fillStyle="pink";
+        ctx.fill();
+    }
+
+
+
+</script>
